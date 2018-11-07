@@ -337,7 +337,7 @@ def item(category_name="", category_id=-1, item_name="", item_id=-1):
         else:
             authorized_user = True
 
-    return render_template('item.html', authorized_user=authorized_user, username=username, category=category, item=item)
+    return render_template('item.html', authorized_user=authorized_user, username=username, item=item)
 
 
 if __name__ == '__main__':
