@@ -26,6 +26,7 @@ DBSession = sessionmaker(bind=engine)
 
 # User Login
 
+
 @app.route('/login')
 def showLogin():
     state = randomString()
@@ -243,7 +244,7 @@ def apiCatalog():
     return jsonify(Categories=[i.serialize for i in categories])
 
 
-@app.route('/api/categories/<int : category_id>')
+@app.route('/api/categories/<int:category_id>')
 def apiCategory(category_id):
     session = DBSession()
     category = session.query(Category).filter_by(id=category_id).one()
@@ -251,7 +252,7 @@ def apiCategory(category_id):
     return jsonify(Category=category.serialize, Items=[i.serialize for i in items])
 
 
-@app.route('/api/items/<int : item_id>')
+@app.route('/api/items/<int:item_id>')
 def apiItem(item_id):
     session = DBSession()
     item = session.query(Item).filter_by(id=item_id).one()
@@ -277,19 +278,21 @@ def catalog():
 
 
 @app.route('/catalog/<category_name>')
-@app.route('/catalog/<int : category_id>')
+@app.route('/catalog/<int:category_id>')
 def category(category_name="", category_id=-1):
     session = DBSession()
     if len(category_name) > 0:
-        category = session.query(Category).filter_by(name=category_name).first()
+        category = session.query(Category).filter_by(
+            name=category_name).first()
     else:
         category = session.query(Category).filter_by(id=category_id).first()
-    
+
     if category is None:
         flash("That category does not exist!")
         return(url_for('catalog'))
 
-    items = session.query(Item).filter_by(category_id=category.id).order_by(desc(Item.id)).limit(10).all()
+    items = session.query(Item).filter_by(
+        category_id=category.id).order_by(desc(Item.id)).limit(10).all()
 
     username = login_session.get('username')
     if username is None:
@@ -301,23 +304,26 @@ def category(category_name="", category_id=-1):
 
 
 @app.route('/catalog/<category_name>/<item_name>')
-@app.route('/catalog/<int : category_id>/<int : item_id>')
+@app.route('/catalog/<int:category_id>/<int:item_id>')
 def item(category_name="", category_id=-1, item_name="", item_id=-1):
     session = DBSession()
     if len(category_name) > 0:
-        category = session.query(Category).filter_by(name=category_name).first()
+        category = session.query(Category).filter_by(
+            name=category_name).first()
     else:
         category = session.query(Category).filter_by(id=category_id).first()
-    
+
     if category is None:
         flash("That category does not exist!")
         return(url_for('catalog'))
 
     if len(item_name) > 0:
-        item = session.query(Item).filter_by(category_id=category.id, name=item_name).first()
+        item = session.query(Item).filter_by(
+            category_id=category.id, name=item_name).first()
     else:
-        item = session.query(Item).filter_by(category_id=category.id, id=item_id).first()
-    
+        item = session.query(Item).filter_by(
+            category_id=category.id, id=item_id).first()
+
     if item is None:
         flash("That item does not exist!")
         return(url_for('catalog'))
