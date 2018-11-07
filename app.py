@@ -17,7 +17,7 @@ app = Flask(__name__)
 
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
-APPLICATION_NAME = "Restaurant Menu App"
+APPLICATION_NAME = "Item Catalog"
 
 engine = create_engine('sqlite:///{}.db'.format(DB_NAME))
 Base.metadata.bind = engine
