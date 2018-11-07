@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>{{category.name}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{url_for('static', filename='css/styles.css')}}" />
+    <script src="{{url_for('static', filename='scripts/script.css')}}"></script>
+</head>
+
+<body>
+    {% include 'header.html' %}
+
+    <h1>{{category.name}}</h1>
+    Items:
+    <ul>
+        {% for i in items %}
+        <li>
+            {{i.name}}
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>

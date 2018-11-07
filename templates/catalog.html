@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Castalog</title>
+    <title>Catalog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="{{url_for('static', filename='css/styles.css')}}" />
     <script src="{{url_for('static', filename='scripts/script.css')}}"></script>
@@ -12,18 +12,19 @@
 <body>
     {% include 'header.html' %}
 
+    Categories:
     <ul>
         {% for c in categories %}
         <li>
             {{c.name}}
         </li>
         {% endfor %}
-    </ul>
-
+    </ul><br>
+    Items:
     <ul>
-        {% for i in items %}
+        {% for i in new_items %}
         <li>
-            {{i.name}}
+            {{i.name}}({{ i.category_id }})
         </li>
         {% endfor %}
     </ul>

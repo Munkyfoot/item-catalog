@@ -289,7 +289,7 @@ def category(category_name="", category_id=-1):
 
     if category is None:
         flash("That category does not exist!")
-        return(url_for('catalog'))
+        return redirect(url_for('catalog'))
 
     items = session.query(Item).filter_by(
         category_id=category.id).order_by(desc(Item.id)).limit(10).all()
@@ -315,7 +315,7 @@ def item(category_name="", category_id=-1, item_name="", item_id=-1):
 
     if category is None:
         flash("That category does not exist!")
-        return(url_for('catalog'))
+        return redirect(url_for('catalog'))
 
     if len(item_name) > 0:
         item = session.query(Item).filter_by(
@@ -326,7 +326,7 @@ def item(category_name="", category_id=-1, item_name="", item_id=-1):
 
     if item is None:
         flash("That item does not exist!")
-        return(url_for('catalog'))
+        return redirect(url_for('catalog'))
 
     username = login_session.get('username')
     if username is None:
