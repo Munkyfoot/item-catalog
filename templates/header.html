@@ -1,0 +1,13 @@
+<div id="header">
+    {% if authorized_user %}
+        {{username}} |
+
+        <a href="{{url_for('disconnect')}}">
+            Logout
+        </a>
+    {% else %}
+    <a href="{{url_for('login')}}">
+        Login
+    </a>
+    {% endif %}
+</div>

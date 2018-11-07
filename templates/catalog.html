@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Castalog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{url_for('static', 'css/styles.css')}}" />
+    <script src="{{url_for('static', 'scripts/script.css')}}"></script>
+</head>
+
+<body>
+    {% include 'header.html' %}
+
+    <ul>
+        {% for c in categories %}
+        <li>
+            {{c.name}}
+        </li>
+        {% endfor %}
+    </ul>
+
+    <ul>
+        {% for i in items %}
+        <li>
+            {{i.name}}
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>
