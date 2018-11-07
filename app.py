@@ -28,7 +28,7 @@ DBSession = sessionmaker(bind=engine)
 
 
 @app.route('/login')
-def showLogin():
+def login():
     state = randomString()
     login_session['state'] = state
     return render_template('login.html', STATE=state)
