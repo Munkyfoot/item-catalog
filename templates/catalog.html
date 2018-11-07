@@ -24,7 +24,7 @@
     <ul>
         {% for i in new_items %}
         <li>
-            {{i.name}}({{ i.category_id }})
+            {{i.name}}({{ i.category.name }})
         </li>
         {% endfor %}
     </ul>
