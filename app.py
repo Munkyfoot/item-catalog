@@ -294,7 +294,7 @@ def category(category_name="", category_id=-1):
 
     if category is None:
         message = "No such category exists!"
-        return render_template('error.html', message=message)
+        return render_template('error.html', message=message, redirect='catalog')
 
     items = session.query(Item).filter_by(
         category_id=category.id).order_by(desc(Item.id)).limit(10).all()
@@ -320,7 +320,7 @@ def item(category_name="", category_id=-1, item_name="", item_id=-1):
 
     if category is None:
         message = "No such category exists!"
-        return render_template('error.html', message=message)
+        return render_template('error.html', message=message, redirect='catalog')
 
     if len(item_name) > 0:
         item = session.query(Item).filter_by(
@@ -331,7 +331,7 @@ def item(category_name="", category_id=-1, item_name="", item_id=-1):
 
     if item is None:
         message = "No such item exists!"
-        return render_template('error.html', message=message)
+        return render_template('error.html', message=message, redirect='catalog')
 
     username = login_session.get('username')
     if username is None:

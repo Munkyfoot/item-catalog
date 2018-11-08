@@ -14,12 +14,16 @@
 
     <div>
         {{message}}<br><br>
+        {% if redirect == 'catalog' %}
         Returning to Catalog...
+        {% else %}
+        Redirecting to {{redirect}}
+        {% endif %}
     </div>
 
     <script>
         setTimeout(function () {
-            window.location.href = "/catalog";
+            window.location.href = "{{url_for(redirect)}}";
         }, 1500);
     </script>
 </body>
