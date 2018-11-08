@@ -31,7 +31,7 @@ DBSession = sessionmaker(bind=engine)
 def login():
     state = randomString()
     login_session['state'] = state
-    return render_template('login.html', STATE=state)
+    return render_template('login.html', STATE=state, CLIENT_ID=CLIENT_ID)
 
 
 @app.route('/gconnect', methods=['POST'])
@@ -112,7 +112,7 @@ def gconnect():
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
 
-    return redirect(url_for('catalog'))
+    return "success"
 
 
 @app.route('/gdisconnect')
@@ -149,8 +149,8 @@ def fbconnect():
     result = h.request(url, 'GET')[1]
 
     token = result.split(',')[0].split(':')[1].replace('"', '')
-
-    url = 'https://graph.facebook.com/v2.8/me?access_token={}&fields=name,id,email'.format(
+    
+    url = 'https://graph.facebook.com/v3.2/me?access_token={}&fields=name,id,email'.format(
         token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
@@ -163,20 +163,25 @@ def fbconnect():
     login_session['username'] = data['name']
     login_session['email'] = data['email']
     login_session['facebook_id'] = data['id']
-
-    url = 'https://graph.facebook.com/v2.8/me/picture/?{}&redirect=0&height=200&width=200'.format(
+    
+    
+    url = 'https://graph.facebook.com/v3.2/me/picture/?access_token={}&redirect=0&height=200&width=200'.format(
         token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
 
-    login_session['picture'] = data['data']['url']
+    data = json.loads(result)
 
+    print(data)
+
+    login_session['picture'] = data['data']['url']
+    
     user_id = getUserId(login_session['email'])
     if user_id is None:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
 
-    return redirect(url_for('catalog'))
+    return "success"
 
 
 @app.route('/fbdisconnect')
