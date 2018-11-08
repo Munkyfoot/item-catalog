@@ -1,13 +1,20 @@
 <div id="header">
-    {% if authorized_user %}
-        {{username}} |
+    <div style="float:left;">
+    <a href="{{url_for('catalog')}}">
+        Full Catalog
+    </a>
+    </div>
+    <div style="float:right;">
+    {% if authorized_user %}    
+    {{username}} |
 
-        <a href="{{url_for('disconnect')}}">
-            Logout
-        </a>
+    <a href="{{url_for('disconnect')}}">
+        Logout
+    </a>
     {% else %}
     <a href="{{url_for('login')}}">
         Login
     </a>
     {% endif %}
-</div>
+    </div>
+</div><br>

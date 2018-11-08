@@ -13,10 +13,15 @@
     {% include 'header.html' %}
 
     <h1>{{item.name}}</h1>
-    <h3>{{item.category.name}}</h3>
+    <h3>Category:
+        <a href="{{url_for('category', category_name=item.category.name)}}">
+            {{item.category.name}}
+        </a>
+        <br>Created by {{item.user.name}}
+    </h3>
     <strong>Description:</strong><br>
     {{item.description}}<br><br>
-    
+
 </body>
 
 </html>

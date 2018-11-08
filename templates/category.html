@@ -16,9 +16,11 @@
     Items:
     <ul>
         {% for i in items %}
-        <li>
-            {{i.name}}
-        </li>
+        <a href="{{url_for('item', category_name=i.category.name, item_name=i.name)}}">
+                <li>
+                    {{i.name}}
+                </li>
+            </a>
         {% endfor %}
     </ul>
 </body>
