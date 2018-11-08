@@ -336,13 +336,15 @@ def item(category_name="", category_id=-1, item_name="", item_id=-1):
     username = login_session.get('username')
     if username is None:
         authorized_user = False
+        creator = False
     else:
+        authorized_user = True
         if login_session['user_id'] != item.user_id:
-            authorized_user = False
+            creator = False
         else:
-            authorized_user = True
+            creator = True
 
-    return render_template('item.html', authorized_user=authorized_user, username=username, item=item)
+    return render_template('item.html', authorized_user=authorized_user, creator=creator, username=username, item=item)
 
 
 if __name__ == '__main__':
