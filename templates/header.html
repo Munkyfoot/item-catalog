@@ -3,6 +3,12 @@
     <a href="{{url_for('catalog')}}">
         Full Catalog
     </a>
+    {% if authorized_user %}
+    |
+    <a href="{{url_for('itemCreate')}}">
+        Create Item
+    </a>
+    {% endif %}
     </div>
     <div style="float:right;">
     {% if authorized_user %}    
