@@ -282,14 +282,10 @@ def catalog():
 
 
 @app.route('/catalog/<category_name>')
-@app.route('/catalog/<int:category_id>')
-def category(category_name="", category_id=-1):
+def category(category_name):
     session = DBSession()
-    if len(category_name) > 0:
-        category = session.query(Category).filter_by(
-            name=category_name).first()
-    else:
-        category = session.query(Category).filter_by(id=category_id).first()
+    category = session.query(Category).filter_by(
+        name=category_name).first()
 
     if category is None:
         message = "No such category exists!"
@@ -308,28 +304,20 @@ def category(category_name="", category_id=-1):
 
 
 @app.route('/catalog/<category_name>/<item_name>')
-@app.route('/catalog/<int:category_id>/<int:item_id>')
-def item(category_name="", category_id=-1, item_name="", item_id=-1):
+def item(category_name, item_name):
     session = DBSession()
-    if len(category_name) > 0:
-        category = session.query(Category).filter_by(
-            name=category_name).first()
-    else:
-        category = session.query(Category).filter_by(id=category_id).first()
+    category = session.query(Category).filter_by(
+        name=category_name).first()
 
     if category is None:
         message = "No such category exists!"
         return render_template('error.html', message=message, redirect='catalog')
 
-    if len(item_name) > 0:
-        item = session.query(Item).filter_by(
-            category_id=category.id, name=item_name).first()
-    else:
-        item = session.query(Item).filter_by(
-            category_id=category.id, id=item_id).first()
+    item = session.query(Item).filter_by(
+        category_id=category.id, name=item_name).first()
 
     if item is None:
-        message = "No such item exists!"
+        message = "No such item exists in this category!"
         return render_template('error.html', message=message, redirect='catalog')
 
     username = login_session.get('username')
@@ -346,7 +334,7 @@ def item(category_name="", category_id=-1, item_name="", item_id=-1):
     return render_template('item.html', authorized_user=authorized_user, creator=creator, username=username, item=item)
 
 
-@app.route('/catalog/item/create', methods=['GET', 'POST'])
+@app.route('/catalog/create_item', methods=['GET', 'POST'])
 def itemCreate():
     session = DBSession()
 
@@ -378,6 +366,68 @@ def itemCreate():
             return render_template('item_create.html', authorized_user=authorized_user, username=username, categories=categories)
         else:
             message = "You must be logged in to create an item!"
+            return render_template('error.html', message=message, redirect='login')
+
+
+@app.route('/catalog/<category_name>/<item_name>/edit', methods=['GET', 'POST'])
+def itemUpdate(category_name, item_name):
+    session = DBSession()
+    category = session.query(Category).filter_by(
+        name=category_name).first()
+
+    if category is None:
+        message = "No such category exists!"
+        return render_template('error.html', message=message, redirect='catalog')
+
+    item = session.query(Item).filter_by(
+        category_id=category.id, name=item_name).first()
+
+    if item is None:
+        message = "No such item exists in this category!"
+        return render_template('error.html', message=message, redirect='catalog')
+
+    username = login_session.get('username')
+    if username is None:
+        authorized_user = False
+        creator = False
+    else:
+        authorized_user = True
+        if login_session['user_id'] != item.user_id:
+            creator = False
+        else:
+            creator = True
+
+    if request.method == 'POST':
+        if authorized_user:
+            if creator:
+                cat_id = session.query(Category).filter_by(
+                name=request.form['category']).one().id
+
+                item.name=request.form['name']
+                item.description=request.form['description']
+                item.category_id=cat_id
+                session.add(item)
+                session.commit()
+
+                return redirect(url_for('catalog'))
+            else:
+                message = "Only the creator of an item can edit it!"
+                return render_template('error.html', message=message, redirect='catalog')
+        else:
+            message = "You must be logged in to edit an item!"
+            return render_template('error.html', message=message, redirect='login')
+
+    elif request.method == 'GET':
+        categories = session.query(Category).all()
+
+        if authorized_user:
+            if creator:
+                return render_template('item_update.html', authorized_user=authorized_user, username=username, categories=categories, item=item)
+            else:
+                message = "Only the creator of an item can edit it!"
+                return render_template('error.html', message=message, redirect='catalog')
+        else:
+            message = "You must be logged in to edit an item!"
             return render_template('error.html', message=message, redirect='login')
 
 

@@ -19,6 +19,11 @@
         </a>
         <br>Created by {{item.user.name}}
     </h3>
+    {% if creator %}
+    <a href="{{url_for('itemUpdate', category_name=item.category.name, item_name=item.name)}}">
+        Edit
+    </a><br><br>
+    {% endif %}
     <strong>Description:</strong><br>
     {{item.description}}<br><br>
 
