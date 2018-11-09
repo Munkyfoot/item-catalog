@@ -34,7 +34,7 @@ def login():
     return render_template('login.html', STATE=state, CLIENT_ID=CLIENT_ID)
 
 
-@app.route('/gconnect/', methods=['POST'])
+@app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate state token
     if request.args.get('state') != login_session['state']:
@@ -115,7 +115,7 @@ def gconnect():
     return "success"
 
 
-@app.route('/gdisconnect/')
+@app.route('/gdisconnect')
 def gdisconnect():
     access_token = login_session.get('access_token')
     if access_token is None:
@@ -132,7 +132,7 @@ def gdisconnect():
     result = h.request(url, 'GET')[0]
 
 
-@app.route('/fbconnect/', methods=['POST'])
+@app.route('/fbconnect', methods=['POST'])
 def fbconnect():
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter'), 401)
@@ -183,7 +183,7 @@ def fbconnect():
     return "success"
 
 
-@app.route('/fbdisconnect/')
+@app.route('/fbdisconnect')
 def fbdisconnect():
     facebook_id = login_session['facebook_id']
     url = 'https://graph.facebook.com/{}/permissions'.format(facebook_id)
