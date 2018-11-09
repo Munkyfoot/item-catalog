@@ -265,6 +265,27 @@ def apiItem(item_id):
 
 # Pages
 
+@app.route('/redirect')
+def destination():
+    if login_session.get('destination'):
+        dest = login_session['destination']
+        del login_session['destination']
+
+        if dest.get('category_name'):
+            if dest.get('item_name'):
+                return redirect(url_for(dest['route'],
+                                        category_name=dest['category_name'],
+                                        item_name=dest['item_name']))
+            else:
+                return redirect(url_for(dest['route'],
+                                        category_name=dest['category_name']))
+        else:
+            return redirect(url_for(dest['route']))
+
+    else:
+        return redirect(url_for('catalog'))
+
+
 @app.route('/')
 @app.route('/catalog/')
 def catalog():
@@ -356,6 +377,8 @@ def itemCreate():
 
             return redirect(url_for('catalog'))
         else:
+            login_session['destination'] = {'route': 'itemCreate'}
+
             message = "You must be logged in to create an item!"
             return render_template('error.html', message=message, redirect='login')
 
@@ -365,6 +388,8 @@ def itemCreate():
         if authorized_user:
             return render_template('item_create.html', authorized_user=authorized_user, username=username, categories=categories)
         else:
+            login_session['destination'] = {'route': 'itemCreate'}
+
             message = "You must be logged in to create an item!"
             return render_template('error.html', message=message, redirect='login')
 
@@ -401,11 +426,11 @@ def itemUpdate(category_name, item_name):
         if authorized_user:
             if creator:
                 cat_id = session.query(Category).filter_by(
-                name=request.form['category']).one().id
+                    name=request.form['category']).one().id
 
-                item.name=request.form['name']
-                item.description=request.form['description']
-                item.category_id=cat_id
+                item.name = request.form['name']
+                item.description = request.form['description']
+                item.category_id = cat_id
                 session.add(item)
                 session.commit()
 
@@ -414,6 +439,10 @@ def itemUpdate(category_name, item_name):
                 message = "Only the creator of an item can edit it!"
                 return render_template('error.html', message=message, redirect='catalog')
         else:
+            login_session['destination'] = {'route': 'itemUpdate',
+                                            'category_name': category_name,
+                                            'item_name': item_name}
+
             message = "You must be logged in to edit an item!"
             return render_template('error.html', message=message, redirect='login')
 
@@ -427,6 +456,10 @@ def itemUpdate(category_name, item_name):
                 message = "Only the creator of an item can edit it!"
                 return render_template('error.html', message=message, redirect='catalog')
         else:
+            login_session['destination'] = {'route': 'itemUpdate',
+                                            'category_name': category_name,
+                                            'item_name': item_name}
+
             message = "You must be logged in to edit an item!"
             return render_template('error.html', message=message, redirect='login')
 
@@ -470,6 +503,10 @@ def itemDelete(category_name, item_name):
                 message = "You must be the creator of an item to delete it!"
                 return render_template('error.html', message=message, redirect='catalog')
         else:
+            login_session['destination'] = {'route': 'itemDelete',
+                                            'category_name': category_name,
+                                            'item_name': item_name}
+
             message = "You must be logged in to delete an item!"
             return render_template('error.html', message=message, redirect='login')
 
@@ -481,6 +518,10 @@ def itemDelete(category_name, item_name):
                 message = "You must be the creator of an item to delete it!"
                 return render_template('error.html', message=message, redirect='catalog')
         else:
+            login_session['destination'] = {'route': 'itemDelete',
+                                            'category_name': category_name,
+                                            'item_name': item_name}
+
             message = "You must be logged in to delete an item!"
             return render_template('error.html', message=message, redirect='login')
 
