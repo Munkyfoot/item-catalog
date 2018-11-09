@@ -431,6 +431,60 @@ def itemUpdate(category_name, item_name):
             return render_template('error.html', message=message, redirect='login')
 
 
+@app.route('/catalog/<category_name>/<item_name>/delete', methods=['GET', 'POST'])
+def itemDelete(category_name, item_name):
+    session = DBSession()
+    category = session.query(Category).filter_by(
+        name=category_name).first()
+
+    if category is None:
+        message = "No such category exists!"
+        return render_template('error.html', message=message, redirect='catalog')
+
+    item = session.query(Item).filter_by(
+        category_id=category.id, name=item_name).first()
+
+    if item is None:
+        message = "No such item exists in this category!"
+        return render_template('error.html', message=message, redirect='catalog')
+
+    username = login_session.get('username')
+    if username is None:
+        authorized_user = False
+        creator = False
+    else:
+        authorized_user = True
+        if login_session['user_id'] != item.user_id:
+            creator = False
+        else:
+            creator = True
+
+    if request.method == 'POST':
+        if authorized_user:
+            if creator:
+                session.delete(item)
+                session.commit()
+
+                return redirect(url_for('catalog'))
+            else:
+                message = "You must be the creator of an item to delete it!"
+                return render_template('error.html', message=message, redirect='catalog')
+        else:
+            message = "You must be logged in to delete an item!"
+            return render_template('error.html', message=message, redirect='login')
+
+    elif request.method == 'GET':
+        if authorized_user:
+            if creator:
+                return render_template('item_delete.html', authorized_user=authorized_user, username=username, item=item)
+            else:
+                message = "You must be the creator of an item to delete it!"
+                return render_template('error.html', message=message, redirect='catalog')
+        else:
+            message = "You must be logged in to delete an item!"
+            return render_template('error.html', message=message, redirect='login')
+
+
 if __name__ == '__main__':
     app.secret_key = randomString()
     app.debug = True

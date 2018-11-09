@@ -22,6 +22,10 @@
     {% if creator %}
     <a href="{{url_for('itemUpdate', category_name=item.category.name, item_name=item.name)}}">
         Edit
+    </a>
+    |
+    <a href="{{url_for('itemDelete', category_name=item.category.name, item_name=item.name)}}">
+        Delete
     </a><br><br>
     {% endif %}
     <strong>Description:</strong><br>
