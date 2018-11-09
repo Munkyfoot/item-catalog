@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Create Item</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{url_for('static', filename='css/styles.css')}}" />
+    <script src="{{url_for('static', filename='scripts/script.js')}}"></script>
+</head>
+
+<body>
+    {% include 'header.html' %}
+
+    <h1>Create an Item</h1>
+
+    <form action="{{url_for('itemCreate')}}" method="POST">
+        <label for="name">Item Name</label><br>
+        <input type="text" name="name" placeholder="Item name..." maxlength="50" required /><br><br>
+
+        <label for="category">Item Category</label><br>
+        <select name="category" required>
+            <option value="" selected disabled>Select a Category</option>
+            {% for c in categories %}
+            <option value="{{c.name}}">{{c.name}}</option>
+            {% endfor %}            
+        </select><br><br>
+
+        <label for="description">Item Description</label><br>
+        <textarea name="description" maxlength="300" ></textarea><br><br>
+
+        <input type="submit" value="Create" />
+    </form>
+</body>
+
+</html>

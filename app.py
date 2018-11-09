@@ -149,7 +149,7 @@ def fbconnect():
     result = h.request(url, 'GET')[1]
 
     token = result.split(',')[0].split(':')[1].replace('"', '')
-    
+
     url = 'https://graph.facebook.com/v3.2/me?access_token={}&fields=name,id,email'.format(
         token)
     h = httplib2.Http()
@@ -163,8 +163,7 @@ def fbconnect():
     login_session['username'] = data['name']
     login_session['email'] = data['email']
     login_session['facebook_id'] = data['id']
-    
-    
+
     url = 'https://graph.facebook.com/v3.2/me/picture/?access_token={}&redirect=0&height=200&width=200'.format(
         token)
     h = httplib2.Http()
@@ -175,7 +174,7 @@ def fbconnect():
     print(data)
 
     login_session['picture'] = data['data']['url']
-    
+
     user_id = getUserId(login_session['email'])
     if user_id is None:
         user_id = createUser(login_session)
@@ -345,6 +344,41 @@ def item(category_name="", category_id=-1, item_name="", item_id=-1):
             creator = True
 
     return render_template('item.html', authorized_user=authorized_user, creator=creator, username=username, item=item)
+
+
+@app.route('/catalog/item/create', methods=['GET', 'POST'])
+def itemCreate():
+    session = DBSession()
+
+    username = login_session.get('username')
+    if username is None:
+        authorized_user = False
+    else:
+        authorized_user = True
+
+    if request.method == 'POST':
+        if authorized_user:
+            cat_id = session.query(Category).filter_by(
+                name=request.form['category']).one().id
+
+            newItem = Item(name=request.form['name'], description=request.form['description'],
+                           category_id=cat_id, user_id=login_session['user_id'])
+            session.add(newItem)
+            session.commit()
+
+            return redirect(url_for('catalog'))
+        else:
+            message = "You must be logged in to create an item!"
+            return render_template('error.html', message=message, redirect='login')
+
+    elif request.method == 'GET':
+        categories = session.query(Category).all()
+
+        if authorized_user:
+            return render_template('item_create.html', authorized_user=authorized_user, username=username, categories=categories)
+        else:
+            message = "You must be logged in to create an item!"
+            return render_template('error.html', message=message, redirect='login')
 
 
 if __name__ == '__main__':
