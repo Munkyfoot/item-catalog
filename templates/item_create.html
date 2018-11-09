@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="{{url_for('static', filename='css/styles.css')}}" />
     <script src="{{url_for('static', filename='scripts/script.js')}}"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="{{url_for('static', filename='scripts/image_check.js')}}"></script>
 </head>
 
 <body>
@@ -15,20 +18,23 @@
     <h1>Create an Item</h1>
 
     <form action="{{url_for('itemCreate')}}" method="POST">
-        <label for="name">Item Name</label><br>
+        <label for="name">Item Name*</label><br>
         <input type="text" name="name" placeholder="Item name..." maxlength="50" required /><br><br>
 
-        <label for="category">Item Category</label><br>
+        <label for="category">Item Category*</label><br>
         <select name="category" required>
             <option value="" selected disabled>Select a Category</option>
             {% for c in categories %}
             <option value="{{c.name}}">{{c.name}}</option>
-            {% endfor %}            
+            {% endfor %}
         </select><br><br>
 
-        <label for="description">Item Description</label><br>
-        <textarea name="description" maxlength="300" ></textarea><br><br>
-
+        <label for="description">Item Description*</label><br>
+        <textarea name="description" maxlength="300" required></textarea><br><br>
+        
+        <label for="image_url">Item Image URL</label><br>
+        <input type="text" name="image_url" placeholder="Image url..."/><br><br>
+        <small>* REQUIRED FIELDS</small><br>
         <input type="submit" value="Create" />
     </form>
 </body>

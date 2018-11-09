@@ -28,6 +28,9 @@
         Delete
     </a><br><br>
     {% endif %}
+    {% if item.image_url %}
+        <img src='{{item.image_url}}' />
+    {% endif %}
     <strong>Description:</strong><br>
     {{item.description}}<br><br>
 

@@ -371,7 +371,8 @@ def itemCreate():
                 name=request.form['category']).one().id
 
             newItem = Item(name=request.form['name'], description=request.form['description'],
-                           category_id=cat_id, user_id=login_session['user_id'])
+                           image_url=request.form.get('image_url'), category_id=cat_id,
+                           user_id=login_session['user_id'])
             session.add(newItem)
             session.commit()
 
@@ -424,13 +425,25 @@ def itemUpdate(category_name, item_name):
 
     if request.method == 'POST':
         if authorized_user:
-            if creator:
-                cat_id = session.query(Category).filter_by(
-                    name=request.form['category']).one().id
+            if creator:               
+                name = request.form.get('name')
+                description = request.form.get('description')
+                image_url = request.form.get('image_url')
+                item_category = request.form.get('category')
 
-                item.name = request.form['name']
-                item.description = request.form['description']
-                item.category_id = cat_id
+                if name:
+                    item.name = name
+                
+                if description:
+                    item.description = description
+
+                if image_url:
+                    item.image_url = image_url
+
+                if item_category:
+                    cat_id = session.query(Category).filter_by(
+                        name=item_category).one().id
+                    item.category_id = cat_id
                 session.add(item)
                 session.commit()
 

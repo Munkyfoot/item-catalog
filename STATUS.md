@@ -1,7 +1,6 @@
 # Current Status of Project
 
 Remaining Steps:
-- Add images to items.
 - Find repeating blocks of code and consolidate to keep things DRY.
 - Style
 - Add any necessary supporting javascript.
