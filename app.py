@@ -27,14 +27,14 @@ DBSession = sessionmaker(bind=engine)
 # User Login
 
 
-@app.route('/login')
+@app.route('/login/')
 def login():
     state = randomString()
     login_session['state'] = state
     return render_template('login.html', STATE=state, CLIENT_ID=CLIENT_ID)
 
 
-@app.route('/gconnect', methods=['POST'])
+@app.route('/gconnect/', methods=['POST'])
 def gconnect():
     # Validate state token
     if request.args.get('state') != login_session['state']:
@@ -115,7 +115,7 @@ def gconnect():
     return "success"
 
 
-@app.route('/gdisconnect')
+@app.route('/gdisconnect/')
 def gdisconnect():
     access_token = login_session.get('access_token')
     if access_token is None:
@@ -132,7 +132,7 @@ def gdisconnect():
     result = h.request(url, 'GET')[0]
 
 
-@app.route('/fbconnect', methods=['POST'])
+@app.route('/fbconnect/', methods=['POST'])
 def fbconnect():
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter'), 401)
@@ -183,7 +183,7 @@ def fbconnect():
     return "success"
 
 
-@app.route('/fbdisconnect')
+@app.route('/fbdisconnect/')
 def fbdisconnect():
     facebook_id = login_session['facebook_id']
     url = 'https://graph.facebook.com/{}/permissions'.format(facebook_id)
@@ -192,7 +192,7 @@ def fbdisconnect():
     return "You have been logged out."
 
 
-@app.route('/disconnect')
+@app.route('/disconnect/')
 def disconnect():
     if 'provider' in login_session:
         if login_session['provider'] == 'google':
@@ -241,14 +241,14 @@ def createUser(login_session):
 
 # JSON APIs Endpoints
 
-@app.route('/api/catalog')
+@app.route('/api/catalog/')
 def apiCatalog():
     session = DBSession()
     categories = session.query(Category).filter_by().all()
     return jsonify(Categories=[i.serialize for i in categories])
 
 
-@app.route('/api/categories/<int:category_id>')
+@app.route('/api/categories/<int:category_id>/')
 def apiCategory(category_id):
     session = DBSession()
     category = session.query(Category).filter_by(id=category_id).one()
@@ -256,7 +256,7 @@ def apiCategory(category_id):
     return jsonify(Category=category.serialize, Items=[i.serialize for i in items])
 
 
-@app.route('/api/items/<int:item_id>')
+@app.route('/api/items/<int:item_id>/')
 def apiItem(item_id):
     session = DBSession()
     item = session.query(Item).filter_by(id=item_id).one()
@@ -265,7 +265,7 @@ def apiItem(item_id):
 
 # Pages
 
-@app.route('/redirect')
+@app.route('/redirect/')
 def destination():
     if login_session.get('destination'):
         dest = login_session['destination']
@@ -302,7 +302,7 @@ def catalog():
     return render_template('catalog.html', authorized_user=authorized_user, username=username, categories=categories, new_items=new_items)
 
 
-@app.route('/catalog/<category_name>')
+@app.route('/catalog/<category_name>/')
 def category(category_name):
     session = DBSession()
     category = session.query(Category).filter_by(
@@ -324,7 +324,7 @@ def category(category_name):
     return render_template('category.html', authorized_user=authorized_user, username=username, category=category, items=items)
 
 
-@app.route('/catalog/<category_name>/<item_name>')
+@app.route('/catalog/<category_name>/<item_name>/')
 def item(category_name, item_name):
     session = DBSession()
     category = session.query(Category).filter_by(
@@ -355,7 +355,7 @@ def item(category_name, item_name):
     return render_template('item.html', authorized_user=authorized_user, creator=creator, username=username, item=item)
 
 
-@app.route('/catalog/create_item', methods=['GET', 'POST'])
+@app.route('/catalog/create_item/', methods=['GET', 'POST'])
 def itemCreate():
     session = DBSession()
 
@@ -395,7 +395,7 @@ def itemCreate():
             return render_template('error.html', message=message, redirect='login')
 
 
-@app.route('/catalog/<category_name>/<item_name>/edit', methods=['GET', 'POST'])
+@app.route('/catalog/<category_name>/<item_name>/edit/', methods=['GET', 'POST'])
 def itemUpdate(category_name, item_name):
     session = DBSession()
     category = session.query(Category).filter_by(
@@ -477,7 +477,7 @@ def itemUpdate(category_name, item_name):
             return render_template('error.html', message=message, redirect='login')
 
 
-@app.route('/catalog/<category_name>/<item_name>/delete', methods=['GET', 'POST'])
+@app.route('/catalog/<category_name>/<item_name>/delete/', methods=['GET', 'POST'])
 def itemDelete(category_name, item_name):
     session = DBSession()
     category = session.query(Category).filter_by(
