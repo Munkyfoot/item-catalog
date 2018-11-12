@@ -245,67 +245,29 @@ def createUser(login_session):
 def apiCatalog():
     session = DBSession()
     categories = session.query(Category).filter_by().all()
-    
-    categories_json = []
 
-    for c in categories:
-        category = session.query(Category).filter_by(id=c.id).one()
-        category_json = category.serialize
-
-        items = session.query(Item).filter_by(category_id=c.id).all()
-        if items is not None:
-            category_json['items'] = [i.serialize for i in items]
-
-        categories_json.append(category_json)
-
-    results = {'categories':categories_json}
-    
-    return jsonify(results=results)
-
-
-@app.route('/api/categories/')
-def apiCategories():
-    session = DBSession()
-    categories = session.query(Category).filter_by().all()
-
-    results = [i.serialize for i in categories]
-    
-    return jsonify(results=results)
+    return jsonify(Categories=[i.serialize for i in categories])
 
 
 @app.route('/api/categories/<int:category_id>/')
 def apiCategory(category_id):
     session = DBSession()
-    category = session.query(Category).filter_by(id=category_id).first()
-    if category is None:
-        return jsonify(error={'reason' : 'No category exists with given id.'})
-
-    category_json = category.serialize
-
+    category = session.query(Category).filter_by(id=category_id).one()
     items = session.query(Item).filter_by(category_id=category_id).all()
-    if items is not None:
-        category_json['items'] = [i.serialize for i in items]
 
-    results = category_json
+    response = {
+                'category' : category,
+                'items': items
+    }
 
-    return jsonify(results=results)
-
-
-@app.route('/api/items/')
-def apiItems():
-    session = DBSession()
-    items = session.query(Item).filter_by().order_by(Item.id).all()
-
-    results = [i.serialize for i in items]
-    
-    return jsonify(results=results)
+    return jsonify(Category=)
 
 
 @app.route('/api/items/<int:item_id>/')
 def apiItem(item_id):
     session = DBSession()
     item = session.query(Item).filter_by(id=item_id).one()
-    return jsonify(results=item.serialize)
+    return jsonify(Item=item.serialize)
 
 
 # Pages
@@ -332,10 +294,6 @@ def destination():
 
 
 @app.route('/')
-def main():
-    return redirect(url_for('catalog'))
-
-
 @app.route('/catalog/')
 def catalog():
     session = DBSession()
@@ -474,7 +432,7 @@ def itemUpdate(category_name, item_name):
 
     if request.method == 'POST':
         if authorized_user:
-            if creator:               
+            if creator:
                 name = request.form.get('name')
                 description = request.form.get('description')
                 image_url = request.form.get('image_url')
@@ -482,7 +440,7 @@ def itemUpdate(category_name, item_name):
 
                 if name:
                     item.name = name
-                
+
                 if description:
                     item.description = description
 
