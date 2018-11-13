@@ -5,8 +5,9 @@
 
 body{
     margin-top: 20px;
-    background-color: rgb(160,160,160);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100%;
+    background: linear-gradient(to top, rgb(96,96,112), rgb(136,136,152)) no-repeat fixed;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 a{
@@ -18,34 +19,60 @@ a{
         text-decoration: underline;
     }
 
-input{
-    padding: 2px;
+input, select, textarea{
+    padding: 2px;    
 }
+
+    input:focus, select:focus, textarea:focus, input:hover, select:hover, textarea:hover{
+        outline: 1px solid rgb(0,176,0);    
+    }
 
 input[type=submit]{
     background-color: green;
-    border: 1px solid white;
+    border: 1px solid gray;
     padding: 10px;
+    font-size: 15px;
     color: white;
+    text-shadow: 0 0 5px black;
+    border-radius: 5px;
+    outline: none;
+    box-shadow: 0 0 1px 0 gray;
+    background-color: rgb(0,176,0);
 }
 
     input[type=submit]:hover{
-        background-color: rgb(0,160,0);
-        box-shadow: 0 0 1px 1px white;
+        background-color: rgb(0,200,0);
+        box-shadow: 0 0 2px 1px gray;        
     }
 
-select{
-    padding: 2px;
+    input[type=submit]:active{
+        background-color: rgb(0,176,0);
+        box-shadow: 0 0 1px 1px gray;        
+    }
+
+option:hover{
+    padding: 1px;
+    background: green;
 }
 
 textarea{
-    padding: 2px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     width: 250px;
     min-height: 20px;
     max-height: 250px;
     height: 60px;
     resize: vertical;
+}
+
+h1{
+    background-color: green;
+    color: white;
+    text-shadow: 0 0 5px black;
+    padding: 5px 10px;
+    margin: -10px -10px 5px -10px;
+    border-bottom: 1px solid black;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: normal;
 }
 
 #header{
@@ -56,7 +83,7 @@ textarea{
     z-index: 10;
     padding: 10px;
     box-shadow: 0 0 2px 1px black;    
-    background-color: rgb(232,232,232);
+    background-color: rgb(224,224,232);
 }
 
 .main{
@@ -66,7 +93,7 @@ textarea{
     max-width: 540px;
     text-align: left;
     box-shadow: 0 0 2px 1px black;    
-    background-color: rgb(232,232,232);
+    background-color: rgb(224,224,232);
 }
 
 .main ul{
@@ -83,7 +110,8 @@ textarea{
     display: block;
     height: 270px;
     width: 270px;
-    margin: 10px 0;
+    margin: 10px auto;
+    background-color: rgb(232,232,232);
     box-shadow: 0 0 1px 1px gray;
     object-fit: contain;
 }

@@ -6,7 +6,6 @@
     <title>Create Item</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="{{url_for('static', filename='css/styles.css')}}" />
-    <script src="{{url_for('static', filename='scripts/script.js')}}"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
     <script src="{{url_for('static', filename='scripts/image_check.js')}}"></script>
@@ -16,7 +15,7 @@
     {% include 'header.html' %}
     <div class="main">
         <h1>Create an Item</h1>
-        <small>* REQUIRED FIELDS</small><br><br>
+        <small>* Required Fields</small><br><br>
         <form action="{{url_for('itemCreate')}}" method="POST">
             <label for="name">Item Name*</label><br>
             <input type="text" name="name" placeholder="Item name..." maxlength="50" required /><br><br>

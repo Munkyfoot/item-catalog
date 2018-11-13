@@ -6,12 +6,12 @@
     <title>Catalog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="{{url_for('static', filename='css/styles.css')}}" />
-    <script src="{{url_for('static', filename='scripts/script.js')}}"></script>
 </head>
 
 <body>
     {% include 'header.html' %}
     <div class="main">    
+        <h1>Catalog</h1>
     <ul>
         <h3>Categories</h3>
         {% for c in categories %}
