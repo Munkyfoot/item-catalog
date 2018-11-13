@@ -1,3 +1,5 @@
+"""The model for the Item Catalog web app."""
+
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -9,6 +11,8 @@ DB_NAME = 'catalog'
 
 
 class User(Base):
+    """Define User table for SQLAlchemy."""
+
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
@@ -18,6 +22,8 @@ class User(Base):
 
 
 class Category(Base):
+    """Define Category table for SQLAlchemy."""
+
     __tablename__ = 'category'
 
     id = Column(Integer, primary_key=True)
@@ -25,7 +31,7 @@ class Category(Base):
 
     @property
     def serialize(self):
-        """Return object data in easily serializeable format"""
+        """Return object data in easily serializeable format."""
         return {
             'id': self.id,
             'name': self.name
@@ -33,6 +39,8 @@ class Category(Base):
 
 
 class Item(Base):
+    """Define Item table for SQLAlchemy."""
+
     __tablename__ = 'item'
 
     id = Column(Integer, primary_key=True)
@@ -46,7 +54,7 @@ class Item(Base):
 
     @property
     def serialize(self):
-        """Return object data in easily serializeable format"""
+        """Return object data in easily serializeable format."""
         return {
             'id': self.id,
             'name': self.name,

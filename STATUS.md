@@ -1,6 +1,5 @@
 # Current Status of Project
 
 Remaining Steps:
-- Comment code.
-- Bring up to pep8 (pycodestyle) and pep257 standards.
+- Add comments to code where useful.
 - Write a README.md

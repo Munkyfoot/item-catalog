@@ -1,3 +1,5 @@
+"""The view for the Item Catalog web app."""
+
 from db import DB_NAME, Base, User, Category, Item
 from sqlalchemy.orm import sessionmaker
 import sqlalchemy.orm.exc as sqlException
@@ -31,6 +33,7 @@ DBSession = sessionmaker(bind=engine)
 
 @app.route('/login/')
 def login():
+    """Render the login page and generate a random state hash."""
     state = randomString()
     login_session['state'] = state
     return render_template('login.html', STATE=state, CLIENT_ID=CLIENT_ID)
@@ -38,6 +41,7 @@ def login():
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
+    """Log in to a G Plus account and get user's info."""
     # Validate state token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -120,6 +124,7 @@ def gconnect():
 
 @app.route('/gdisconnect')
 def gdisconnect():
+    """Log out of G Plus account."""
     access_token = login_session.get('access_token')
     if access_token is None:
         print 'Access Token is None'
@@ -139,6 +144,7 @@ def gdisconnect():
 
 @app.route('/fbconnect', methods=['POST'])
 def fbconnect():
+    """Log in to a Facebook account and get user's info."""
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter'), 401)
         response.headers['Content-type'] = 'application/json'
@@ -194,6 +200,7 @@ def fbconnect():
 
 @app.route('/fbdisconnect')
 def fbdisconnect():
+    """Log out of Facebook account."""
     facebook_id = login_session['facebook_id']
     url = 'https://graph.facebook.com/{}/permissions'.format(facebook_id)
     h = httplib2.Http()
@@ -203,6 +210,7 @@ def fbdisconnect():
 
 @app.route('/disconnect/')
 def disconnect():
+    """Determine OAuth provider and log out."""
     if 'provider' in login_session:
         if login_session['provider'] == 'google':
             gdisconnect()
@@ -224,6 +232,7 @@ def disconnect():
 
 
 def getUserId(email):
+    """Retrieve the user's id from their email."""
     try:
         session = DBSession()
         user = session.query(User).filter_by(email=email).one()
@@ -233,12 +242,14 @@ def getUserId(email):
 
 
 def getUserInfo(user_id):
+    """Get the user's info."""
     session = DBSession()
     user = session.query(User).filter_by(id=user_id).one()
     return user
 
 
 def createUser(login_session):
+    """Create a user account."""
     session = DBSession()
     newUser = User(name=login_session['username'],
                    email=login_session['email'],
@@ -253,6 +264,7 @@ def createUser(login_session):
 
 @app.route('/api/catalog/')
 def apiCatalog():
+    """Return all categories and the items within each category."""
     session = DBSession()
     categories = session.query(Category).filter_by().all()
 
@@ -275,6 +287,7 @@ def apiCatalog():
 
 @app.route('/api/categories/')
 def apiCategories():
+    """Return all categories."""
     session = DBSession()
     categories = session.query(Category).filter_by().all()
 
@@ -285,6 +298,7 @@ def apiCategories():
 
 @app.route('/api/categories/<int:category_id>/')
 def apiCategory(category_id):
+    """Return a specific category and a list of it's items."""
     session = DBSession()
     category = session.query(Category).filter_by(id=category_id).first()
     if category is None:
@@ -303,6 +317,7 @@ def apiCategory(category_id):
 
 @app.route('/api/items/')
 def apiItems():
+    """Return all items."""
     session = DBSession()
     items = session.query(Item).filter_by().order_by(Item.id).all()
 
@@ -313,6 +328,7 @@ def apiItems():
 
 @app.route('/api/items/<int:item_id>/')
 def apiItem(item_id):
+    """Return a specific item."""
     session = DBSession()
     item = session.query(Item).filter_by(id=item_id).first()
     if item is None:
@@ -325,11 +341,13 @@ def apiItem(item_id):
 
 @app.route('/documentation/')
 def documentation():
+    """Render the documentation page."""
     return render_template('documentation.html')
 
 
 @app.route('/redirect/')
 def destination():
+    """Redirect the user to their original destination."""
     if login_session.get('destination'):
         dest = login_session['destination']
         del login_session['destination']
@@ -351,11 +369,13 @@ def destination():
 
 @app.route('/')
 def main():
+    """Redirect user to catalog URI."""
     return redirect(url_for('catalog'))
 
 
 @app.route('/catalog/')
 def catalog():
+    """Display the full catalog."""
     session = DBSession()
     categories = session.query(Category).order_by(asc(Category.name)).all()
     new_items = session.query(Item).order_by(desc(Item.id)).limit(10).all()
@@ -373,6 +393,7 @@ def catalog():
 
 @app.route('/catalog/<category_name>/')
 def category(category_name):
+    """Display a specific category and it's items."""
     session = DBSession()
     category = session.query(Category).filter_by(
         name=category_name).first()
@@ -397,6 +418,7 @@ def category(category_name):
 
 @app.route('/catalog/<category_name>/<item_name>/')
 def item(category_name, item_name):
+    """Display a specific item."""
     session = DBSession()
     category = session.query(Category).filter_by(
         name=category_name).first()
@@ -431,6 +453,7 @@ def item(category_name, item_name):
 
 @app.route('/catalog/create_item/', methods=['GET', 'POST'])
 def itemCreate():
+    """Handle GET and POST requests for item creation."""
     session = DBSession()
 
     username = login_session.get('username')
@@ -479,6 +502,7 @@ def itemCreate():
 @app.route('/catalog/<category_name>/<item_name>/edit/',
            methods=['GET', 'POST'])
 def itemUpdate(category_name, item_name):
+    """Handle GET and POST requests for item editing."""
     session = DBSession()
     category = session.query(Category).filter_by(
         name=category_name).first()
@@ -572,6 +596,7 @@ def itemUpdate(category_name, item_name):
 @app.route('/catalog/<category_name>/<item_name>/delete/',
            methods=['GET', 'POST'])
 def itemDelete(category_name, item_name):
+    """Handle GET and POST requests for item deletion."""
     session = DBSession()
     category = session.query(Category).filter_by(
         name=category_name).first()
