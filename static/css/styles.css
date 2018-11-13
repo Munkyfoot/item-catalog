@@ -144,7 +144,7 @@ h1{
     .main img{
         display: block;
         height: 270px;
-        width: 270px;
+        width: 100%;
         margin: 10px auto;
         background-color: rgb(232,232,232);
         box-shadow: 0 0 1px 1px gray;
