@@ -14,29 +14,29 @@
 
 <body>
     {% include 'header.html' %}
+    <div class="main">
+        <h1>Create an Item</h1>
+        <small>* REQUIRED FIELDS</small><br><br>
+        <form action="{{url_for('itemCreate')}}" method="POST">
+            <label for="name">Item Name*</label><br>
+            <input type="text" name="name" placeholder="Item name..." maxlength="50" required /><br><br>
 
-    <h1>Create an Item</h1>
+            <label for="category">Item Category*</label><br>
+            <select name="category" required>
+                <option value="" selected disabled>Select a Category</option>
+                {% for c in categories %}
+                <option value="{{c.name}}">{{c.name}}</option>
+                {% endfor %}
+            </select><br><br>
 
-    <form action="{{url_for('itemCreate')}}" method="POST">
-        <label for="name">Item Name*</label><br>
-        <input type="text" name="name" placeholder="Item name..." maxlength="50" required /><br><br>
+            <label for="description">Item Description*</label><br>
+            <textarea name="description" maxlength="300" required></textarea><br><br>
 
-        <label for="category">Item Category*</label><br>
-        <select name="category" required>
-            <option value="" selected disabled>Select a Category</option>
-            {% for c in categories %}
-            <option value="{{c.name}}">{{c.name}}</option>
-            {% endfor %}
-        </select><br><br>
-
-        <label for="description">Item Description*</label><br>
-        <textarea name="description" maxlength="300" required></textarea><br><br>
-        
-        <label for="image_url">Item Image URL</label><br>
-        <input type="text" name="image_url" placeholder="Image url..."/><br><br>
-        <small>* REQUIRED FIELDS</small><br>
-        <input type="submit" value="Create" />
-    </form>
+            <label for="image_url">Item Image URL</label><br>
+            <input type="text" name="image_url" placeholder="Image url..." /><br><br>            
+            <input type="submit" value="Create" />
+        </form>
+    </div>
 </body>
 
 </html>

@@ -11,29 +11,32 @@
 
 <body>
     {% include 'header.html' %}
-
-    <h1>{{item.name}}</h1>
-    <h3>Category:
-        <a href="{{url_for('category', category_name=item.category.name)}}">
-            {{item.category.name}}
+    <div class="main">
+        <h1>{{item.name}}</h1>
+        <h3>Category:
+            <a href="{{url_for('category', category_name=item.category.name)}}">
+                {{item.category.name}}
+            </a>
+            <br>Created by {{item.user.name}}
+        </h3>
+        {% if creator %}
+        <a href="{{url_for('itemUpdate', category_name=item.category.name, item_name=item.name)}}">
+            Edit
         </a>
-        <br>Created by {{item.user.name}}
-    </h3>
-    {% if creator %}
-    <a href="{{url_for('itemUpdate', category_name=item.category.name, item_name=item.name)}}">
-        Edit
-    </a>
-    |
-    <a href="{{url_for('itemDelete', category_name=item.category.name, item_name=item.name)}}">
-        Delete
-    </a><br><br>
-    {% endif %}
-    {% if item.image_url %}
+        |
+        <a href="{{url_for('itemDelete', category_name=item.category.name, item_name=item.name)}}">
+            Delete
+        </a><br>
+        {% endif %}
+        
+        {% if item.image_url %}
         <img src='{{item.image_url}}' />
-    {% endif %}
-    <strong>Description:</strong><br>
-    {{item.description}}<br><br>
-
+        {% else %}
+        <br>
+        {% endif %}
+        <strong>Description:</strong><br>
+        {{item.description}}
+    </div>
 </body>
 
 </html>

@@ -11,18 +11,19 @@
 
 <body>
     {% include 'header.html' %}
-
-    <h1>{{category.name}}</h1>
-    Items:
-    <ul>
-        {% for i in items %}
-        <a href="{{url_for('item', category_name=i.category.name, item_name=i.name)}}">
+    <div class="main">
+        <h1>{{category.name}}</h1>        
+        <ul>
+            <h3>Items</h3>
+            {% for i in items %}
+            <a href="{{url_for('item', category_name=i.category.name, item_name=i.name)}}">
                 <li>
                     {{i.name}}
                 </li>
             </a>
-        {% endfor %}
-    </ul>
+            {% endfor %}
+        </ul>
+    </div>
 </body>
 
 </html>

@@ -11,9 +11,9 @@
 
 <body>
     {% include 'header.html' %}
-
-    Categories:
+    <div class="main">    
     <ul>
+        <h3>Categories</h3>
         {% for c in categories %}
         <a href="{{url_for('category', category_name=c.name)}}">
             <li>
@@ -21,17 +21,19 @@
             </li>
         </a>
         {% endfor %}
-    </ul><br>
-    New Items:
+    </ul>
+    
     <ul>
+        <h3>New Items</h3>
         {% for i in new_items %}
         <a href="{{url_for('item', category_name=i.category.name, item_name=i.name)}}">
             <li>
-                {{i.name}}({{ i.category.name }})
+                {{i.name}} ({{ i.category.name }})
             </li>
         </a>
         {% endfor %}
     </ul>
+    </div>
 </body>
 
 </html>

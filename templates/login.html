@@ -17,23 +17,23 @@
 
 
 <body>
-    <div id="result"></div>
+    <div class="main login">
+        <div id="result"><h3>Select A Sign In Method</h3></div>
 
-    <div id="login_buttons">
-        <div id="g_login">
-            <span class="g-signin" data-scope="openid email" data-clientid="{{CLIENT_ID}}" data-redirecturi="postmessage"
-                data-accesstype="offline" data-cookiepolicy="single_host_origin" data-callback="signInCallback"
-                data-approvalprompt="force">
-            </span>
-        </div>
+        <div id="login_buttons">
+            <div id="g_login">
+                <span class="g-signin" data-scope="openid email" data-clientid="{{CLIENT_ID}}" data-redirecturi="postmessage"
+                    data-accesstype="offline" data-cookiepolicy="single_host_origin" data-callback="signInCallback"
+                    data-approvalprompt="force">
+                </span>
+            </div>
 
-        <button id="fb_login">
             <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
                 <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
             </fb:login-button>
-        </button>
-        <br>
-        <a href="{{url_for('catalog')}}">Nevermind</a>
+            <br>
+            <a style="display:block;margin-top:10px;" href="{{url_for('catalog')}}">Nevermind</a>
+        </div>
     </div>
 
     <!--Google Login-->
@@ -41,7 +41,7 @@
         function signInCallback(authResult) {
             if (authResult['code']) {
                 $('#login_buttons').attr('style', 'display: none');
-
+                $('#result').html("Logging in...");
                 $.ajax({
                     type: 'POST',
                     url: '/gconnect?state={{STATE}}',
@@ -92,6 +92,7 @@
             console.log('Welcome!  Fetching your information.... ');
             FB.api('/me', function (response) {
                 $('#login_buttons').attr('style', 'display: none');
+                $('#result').html("Logging in...");
                 console.log('Successful login for: ' + response.name);
                 $.ajax({
                     type: 'POST',

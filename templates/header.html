@@ -1,5 +1,5 @@
 <div id="header">
-    <div style="float:left;">
+    <span style="float:left;">
     <a href="{{url_for('catalog')}}">
         Full Catalog
     </a>
@@ -9,8 +9,8 @@
         Create Item
     </a>
     {% endif %}
-    </div>
-    <div style="float:right;">
+    </span>
+    <span style="float:right;">
     {% if authorized_user %}    
     {{username}} |
 
@@ -22,5 +22,5 @@
         Login
     </a>
     {% endif %}
-    </div>
+    </span>
 </div><br>
