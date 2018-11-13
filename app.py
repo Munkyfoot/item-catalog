@@ -1,7 +1,9 @@
 from db import DB_NAME, Base, User, Category, Item
 from sqlalchemy.orm import sessionmaker
+import sqlalchemy.orm.exc as sqlException
 from sqlalchemy import create_engine, asc, desc
-from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
+from flask import Flask, render_template, request
+from flask import redirect, jsonify, url_for, flash
 from flask import session as login_session
 
 from oauth2client.client import flow_from_clientsecrets
@@ -57,8 +59,8 @@ def gconnect():
 
     # Check that the access token is valid.
     access_token = credentials.access_token
-    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
-           % access_token)
+    url = ('https://www.googleapis.com/oauth2/v1/'
+           'tokeninfo?access_token={}').format(access_token)
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
     # If there was an error in the access token info, abort.
@@ -86,7 +88,8 @@ def gconnect():
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
+        response = make_response(json.dumps('Current user is'
+                                            'already connected.'),
                                  200)
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -127,7 +130,9 @@ def gdisconnect():
     print 'In gdisconnect access token is %s', access_token
     print 'User name is: '
     print login_session['username']
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    url = ('https://accounts.google.com/'
+           'o/oauth2/revoke?token={}').format(
+        login_session['access_token'])
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
 
@@ -143,14 +148,17 @@ def fbconnect():
         'web']['app_id']
     app_secret = json.loads(open('fb_client_secrets.json', 'r').read())[
         'web']['app_secret']
-    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id={}&client_secret={}&fb_exchange_token={}'.format(
+    url = ('https://graph.facebook.com/oauth/access_token'
+           '?grant_type=fb_exchange_token'
+           '&client_id={}&client_secret={}&fb_exchange_token={}').format(
         app_id, app_secret, access_token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
 
     token = result.split(',')[0].split(':')[1].replace('"', '')
 
-    url = 'https://graph.facebook.com/v3.2/me?access_token={}&fields=name,id,email'.format(
+    url = ('https://graph.facebook.com/v3.2/me?'
+           'access_token={}&fields=name,id,email').format(
         token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
@@ -164,7 +172,8 @@ def fbconnect():
     login_session['email'] = data['email']
     login_session['facebook_id'] = data['id']
 
-    url = 'https://graph.facebook.com/v3.2/me/picture/?access_token={}&redirect=0&height=200&width=200'.format(
+    url = ('https://graph.facebook.com/v3.2/me/picture/'
+           '?access_token={}&redirect=0&height=200&width=200').format(
         token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
@@ -219,7 +228,7 @@ def getUserId(email):
         session = DBSession()
         user = session.query(User).filter_by(email=email).one()
         return user.id
-    except:
+    except sqlException.NoResultFound:
         return None
 
 
@@ -232,7 +241,8 @@ def getUserInfo(user_id):
 def createUser(login_session):
     session = DBSession()
     newUser = User(name=login_session['username'],
-                   email=login_session['email'], picture=login_session['picture'])
+                   email=login_session['email'],
+                   picture=login_session['picture'])
     session.add(newUser)
     session.commit()
     user = session.query(User).filter_by(email=login_session['email']).one()
@@ -245,7 +255,7 @@ def createUser(login_session):
 def apiCatalog():
     session = DBSession()
     categories = session.query(Category).filter_by().all()
-    
+
     categories_json = []
 
     for c in categories:
@@ -258,8 +268,8 @@ def apiCatalog():
 
         categories_json.append(category_json)
 
-    results = {'categories':categories_json}
-    
+    results = {'categories': categories_json}
+
     return jsonify(results=results)
 
 
@@ -269,7 +279,7 @@ def apiCategories():
     categories = session.query(Category).filter_by().all()
 
     results = [i.serialize for i in categories]
-    
+
     return jsonify(results=results)
 
 
@@ -278,7 +288,7 @@ def apiCategory(category_id):
     session = DBSession()
     category = session.query(Category).filter_by(id=category_id).first()
     if category is None:
-        return jsonify(error={'reason' : 'No category exists with given id.'})
+        return jsonify(error={'reason': 'No category exists with given id.'})
 
     category_json = category.serialize
 
@@ -297,7 +307,7 @@ def apiItems():
     items = session.query(Item).filter_by().order_by(Item.id).all()
 
     results = [i.serialize for i in items]
-    
+
     return jsonify(results=results)
 
 
@@ -306,7 +316,7 @@ def apiItem(item_id):
     session = DBSession()
     item = session.query(Item).filter_by(id=item_id).first()
     if item is None:
-        return jsonify(error={'reason' : 'No item exists with given id.'})
+        return jsonify(error={'reason': 'No item exists with given id.'})
 
     return jsonify(results=item.serialize)
 
@@ -316,6 +326,7 @@ def apiItem(item_id):
 @app.route('/documentation/')
 def documentation():
     return render_template('documentation.html')
+
 
 @app.route('/redirect/')
 def destination():
@@ -355,7 +366,9 @@ def catalog():
     else:
         authorized_user = True
 
-    return render_template('catalog.html', authorized_user=authorized_user, username=username, categories=categories, new_items=new_items)
+    return render_template('catalog.html', authorized_user=authorized_user,
+                           username=username, categories=categories,
+                           new_items=new_items)
 
 
 @app.route('/catalog/<category_name>/')
@@ -366,7 +379,8 @@ def category(category_name):
 
     if category is None:
         message = "No such category exists!"
-        return render_template('error.html', message=message, redirect='catalog')
+        return render_template('error.html', message=message,
+                               redirect='catalog')
 
     items = session.query(Item).filter_by(
         category_id=category.id).order_by(desc(Item.id)).limit(10).all()
@@ -377,7 +391,8 @@ def category(category_name):
     else:
         authorized_user = True
 
-    return render_template('category.html', authorized_user=authorized_user, username=username, category=category, items=items)
+    return render_template('category.html', authorized_user=authorized_user,
+                           username=username, category=category, items=items)
 
 
 @app.route('/catalog/<category_name>/<item_name>/')
@@ -388,14 +403,16 @@ def item(category_name, item_name):
 
     if category is None:
         message = "No such category exists!"
-        return render_template('error.html', message=message, redirect='catalog')
+        return render_template('error.html', message=message,
+                               redirect='catalog')
 
     item = session.query(Item).filter_by(
         category_id=category.id, name=item_name).first()
 
     if item is None:
         message = "No such item exists in this category!"
-        return render_template('error.html', message=message, redirect='catalog')
+        return render_template('error.html', message=message,
+                               redirect='catalog')
 
     username = login_session.get('username')
     if username is None:
@@ -408,7 +425,8 @@ def item(category_name, item_name):
         else:
             creator = True
 
-    return render_template('item.html', authorized_user=authorized_user, creator=creator, username=username, item=item)
+    return render_template('item.html', authorized_user=authorized_user,
+                           creator=creator, username=username, item=item)
 
 
 @app.route('/catalog/create_item/', methods=['GET', 'POST'])
@@ -426,8 +444,10 @@ def itemCreate():
             cat_id = session.query(Category).filter_by(
                 name=request.form['category']).one().id
 
-            newItem = Item(name=request.form['name'], description=request.form['description'],
-                           image_url=request.form.get('image_url'), category_id=cat_id,
+            newItem = Item(name=request.form['name'],
+                           description=request.form['description'],
+                           image_url=request.form.get('image_url'),
+                           category_id=cat_id,
                            user_id=login_session['user_id'])
             session.add(newItem)
             session.commit()
@@ -437,21 +457,27 @@ def itemCreate():
             login_session['destination'] = {'route': 'itemCreate'}
 
             message = "You must be logged in to create an item!"
-            return render_template('error.html', message=message, redirect='login')
+            return render_template('error.html', message=message,
+                                   redirect='login')
 
     elif request.method == 'GET':
         categories = session.query(Category).all()
 
         if authorized_user:
-            return render_template('item_create.html', authorized_user=authorized_user, username=username, categories=categories)
+            return render_template('item_create.html',
+                                   authorized_user=authorized_user,
+                                   username=username,
+                                   categories=categories)
         else:
             login_session['destination'] = {'route': 'itemCreate'}
 
             message = "You must be logged in to create an item!"
-            return render_template('error.html', message=message, redirect='login')
+            return render_template('error.html', message=message,
+                                   redirect='login')
 
 
-@app.route('/catalog/<category_name>/<item_name>/edit/', methods=['GET', 'POST'])
+@app.route('/catalog/<category_name>/<item_name>/edit/',
+           methods=['GET', 'POST'])
 def itemUpdate(category_name, item_name):
     session = DBSession()
     category = session.query(Category).filter_by(
@@ -459,14 +485,16 @@ def itemUpdate(category_name, item_name):
 
     if category is None:
         message = "No such category exists!"
-        return render_template('error.html', message=message, redirect='catalog')
+        return render_template('error.html', message=message,
+                               redirect='catalog')
 
     item = session.query(Item).filter_by(
         category_id=category.id, name=item_name).first()
 
     if item is None:
         message = "No such item exists in this category!"
-        return render_template('error.html', message=message, redirect='catalog')
+        return render_template('error.html', message=message,
+                               redirect='catalog')
 
     username = login_session.get('username')
     if username is None:
@@ -481,7 +509,7 @@ def itemUpdate(category_name, item_name):
 
     if request.method == 'POST':
         if authorized_user:
-            if creator:               
+            if creator:
                 name = request.form.get('name')
                 description = request.form.get('description')
                 image_url = request.form.get('image_url')
@@ -489,7 +517,7 @@ def itemUpdate(category_name, item_name):
 
                 if name:
                     item.name = name
-                
+
                 if description:
                     item.description = description
 
@@ -506,34 +534,43 @@ def itemUpdate(category_name, item_name):
                 return redirect(url_for('catalog'))
             else:
                 message = "Only the creator of an item can edit it!"
-                return render_template('error.html', message=message, redirect='catalog')
+                return render_template('error.html', message=message,
+                                       redirect='catalog')
         else:
             login_session['destination'] = {'route': 'itemUpdate',
                                             'category_name': category_name,
                                             'item_name': item_name}
 
             message = "You must be logged in to edit an item!"
-            return render_template('error.html', message=message, redirect='login')
+            return render_template('error.html', message=message,
+                                   redirect='login')
 
     elif request.method == 'GET':
         categories = session.query(Category).all()
 
         if authorized_user:
             if creator:
-                return render_template('item_update.html', authorized_user=authorized_user, username=username, categories=categories, item=item)
+                return render_template('item_update.html',
+                                       authorized_user=authorized_user,
+                                       username=username,
+                                       categories=categories,
+                                       item=item)
             else:
                 message = "Only the creator of an item can edit it!"
-                return render_template('error.html', message=message, redirect='catalog')
+                return render_template('error.html', message=message,
+                                       redirect='catalog')
         else:
             login_session['destination'] = {'route': 'itemUpdate',
                                             'category_name': category_name,
                                             'item_name': item_name}
 
             message = "You must be logged in to edit an item!"
-            return render_template('error.html', message=message, redirect='login')
+            return render_template('error.html', message=message,
+                                   redirect='login')
 
 
-@app.route('/catalog/<category_name>/<item_name>/delete/', methods=['GET', 'POST'])
+@app.route('/catalog/<category_name>/<item_name>/delete/',
+           methods=['GET', 'POST'])
 def itemDelete(category_name, item_name):
     session = DBSession()
     category = session.query(Category).filter_by(
@@ -541,14 +578,16 @@ def itemDelete(category_name, item_name):
 
     if category is None:
         message = "No such category exists!"
-        return render_template('error.html', message=message, redirect='catalog')
+        return render_template('error.html', message=message,
+                               redirect='catalog')
 
     item = session.query(Item).filter_by(
         category_id=category.id, name=item_name).first()
 
     if item is None:
         message = "No such item exists in this category!"
-        return render_template('error.html', message=message, redirect='catalog')
+        return render_template('error.html', message=message,
+                               redirect='catalog')
 
     username = login_session.get('username')
     if username is None:
@@ -570,29 +609,36 @@ def itemDelete(category_name, item_name):
                 return redirect(url_for('catalog'))
             else:
                 message = "You must be the creator of an item to delete it!"
-                return render_template('error.html', message=message, redirect='catalog')
+                return render_template('error.html', message=message,
+                                       redirect='catalog')
         else:
             login_session['destination'] = {'route': 'itemDelete',
                                             'category_name': category_name,
                                             'item_name': item_name}
 
             message = "You must be logged in to delete an item!"
-            return render_template('error.html', message=message, redirect='login')
+            return render_template('error.html', message=message,
+                                   redirect='login')
 
     elif request.method == 'GET':
         if authorized_user:
             if creator:
-                return render_template('item_delete.html', authorized_user=authorized_user, username=username, item=item)
+                return render_template('item_delete.html',
+                                       authorized_user=authorized_user,
+                                       username=username,
+                                       item=item)
             else:
                 message = "You must be the creator of an item to delete it!"
-                return render_template('error.html', message=message, redirect='catalog')
+                return render_template('error.html', message=message,
+                                       redirect='catalog')
         else:
             login_session['destination'] = {'route': 'itemDelete',
                                             'category_name': category_name,
                                             'item_name': item_name}
 
             message = "You must be logged in to delete an item!"
-            return render_template('error.html', message=message, redirect='login')
+            return render_template('error.html', message=message,
+                                   redirect='login')
 
 
 if __name__ == '__main__':
