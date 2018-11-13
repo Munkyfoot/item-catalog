@@ -1,26 +1,31 @@
 <div id="header">
     <span style="float:left;">
-    <a href="{{url_for('catalog')}}">
-        Full Catalog
-    </a>
-    {% if authorized_user %}
-    |
-    <a href="{{url_for('itemCreate')}}">
-        Create Item
-    </a>
-    {% endif %}
+        <a href="{{url_for('catalog')}}" title="Full Catalog">
+            <img class="nav" src="{{url_for('static', filename='images/icons/catalog.png')}}" />
+        </a>
+        {% if authorized_user %}
+        <a href="{{url_for('itemCreate')}}" title="Create Item">
+            <img class="nav" src="{{url_for('static', filename='images/icons/create.png')}}" />
+        </a>
+        {% endif %}
     </span>
     <span style="float:right;">
-    {% if authorized_user %}    
-    {{username}} |
+        {% if authorized_user %}
+        <div id="username">
+            {{username}}
+        </div>
 
-    <a href="{{url_for('disconnect')}}">
-        Logout
-    </a>
-    {% else %}
-    <a href="{{url_for('login')}}">
-        Login
-    </a>
-    {% endif %}
+        <a href="{{url_for('disconnect')}}">
+            <div id="login_button">
+                Logout
+            </div>
+        </a>
+        {% else %}
+        <a href="{{url_for('login')}}">
+            <div id="login_button">
+                Login
+            </div>
+        </a>
+        {% endif %}
     </span>
 </div><br>
