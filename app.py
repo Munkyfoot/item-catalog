@@ -304,11 +304,18 @@ def apiItems():
 @app.route('/api/items/<int:item_id>/')
 def apiItem(item_id):
     session = DBSession()
-    item = session.query(Item).filter_by(id=item_id).one()
+    item = session.query(Item).filter_by(id=item_id).first()
+    if item is None:
+        return jsonify(error={'reason' : 'No item exists with given id.'})
+
     return jsonify(results=item.serialize)
 
 
 # Pages
+
+@app.route('/documentation/')
+def documentation():
+    return render_template('documentation.html')
 
 @app.route('/redirect/')
 def destination():

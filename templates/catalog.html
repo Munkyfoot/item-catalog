@@ -28,7 +28,7 @@
             {% for i in new_items %}
             <a href="{{url_for('item', category_name=i.category.name, item_name=i.name)}}">
                 <li>
-                    {{i.name}} ({{ i.category.name }})
+                    {{i.name}} <i>({{ i.category.name }})</i>
                 </li>
             </a>
             {% endfor %}
@@ -42,24 +42,9 @@
                 </li>
             </a><br>
             <h3>API</h3>
-            <a href="{{url_for('catalog')}}">
-                    <li>
-                        Documentation
-                    </li>
-                </a>
-            <a href="{{url_for('apiCatalog')}}">
+            <a href="{{url_for('documentation')}}">
                 <li>
-                    Catalog (JSON)
-                </li>
-            </a>
-            <a href="{{url_for('apiCategories')}}">
-                <li>
-                    Categories (JSON)
-                </li>
-            </a>
-            <a href="{{url_for('apiItems')}}">
-                <li>
-                    Items (JSON)
+                    Documentation
                 </li>
             </a>
         </ul>

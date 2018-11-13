@@ -131,32 +131,40 @@ h1{
     background-color: rgb(224,224,232);
 }
 
-.main ul{
-    display: inline-block;
-    vertical-align: top;
-    text-align: left;
+    .main ul{
+        display: inline-block;
+        vertical-align: top;
+        text-align: left;
+        padding: 10px;
+        margin: 10px;
+        border-left: 1px solid gray;
+        list-style: none;
+    }
+
+    .main img{
+        display: block;
+        height: 270px;
+        width: 270px;
+        margin: 10px auto;
+        background-color: rgb(232,232,232);
+        box-shadow: 0 0 1px 1px gray;
+        object-fit: contain;
+    }
+
+    .main img[src='']{
+        height: unset;
+        width: unset;
+        margin: unset;
+        box-shadow: unset;
+        object-fit: unset;
+    }
+
+.inside{
     padding: 10px;
-    margin: 10px;
-    border-left: 1px solid gray;
-    list-style: none;
-}
-
-.main img{
-    display: block;
-    height: 270px;
-    width: 270px;
-    margin: 10px auto;
-    background-color: rgb(232,232,232);
-    box-shadow: 0 0 1px 1px gray;
-    object-fit: contain;
-}
-
-.main img[src='']{
-    height: unset;
-    width: unset;
-    margin: unset;
-    box-shadow: unset;
-    object-fit: unset;
+    margin-top: 10px;
+    border: 1px solid gray;
+    box-shadow: 0 0 2px 1px gray;
+    background-color: rgb(224,224,232);
 }
 
 .login {
@@ -165,4 +173,8 @@ h1{
 
 #login_buttons{
     margin-top: 10px;
+}
+
+.output{
+    font-family: monospace;
 }

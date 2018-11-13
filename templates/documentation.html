@@ -3,67 +3,167 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Catalog</title>
+    <title>Documentation</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="{{url_for('static', filename='css/styles.css')}}" />
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="{{url_for('static', filename='scripts/documentation.js')}}"></script>
 </head>
 
 <body>
     {% include 'header.html' %}
     <div class="main">
-        <h1>Catalog</h1>
-        <ul>
-            <h3>Categories</h3>
-            {% for c in categories %}
-            <a href="{{url_for('category', category_name=c.name)}}">
-                <li>
-                    {{c.name}}
-                </li>
-            </a>
-            {% endfor %}
-        </ul>
+        <h1>API Documentation</h1>
+        <div class="inside">
+            <h2>Catalog</h2><br>
 
-        <ul>
-            <h3>New Items</h3>
-            {% for i in new_items %}
-            <a href="{{url_for('item', category_name=i.category.name, item_name=i.name)}}">
-                <li>
-                    {{i.name}} ({{ i.category.name }})
-                </li>
-            </a>
-            {% endfor %}
-        </ul>
-        {% if authorized_user %}
-        <ul>
-            <h3>User</h3>
-            <a href="{{url_for('itemCreate')}}">
-                <li>
-                    Create an Item
-                </li>
-            </a><br>
-            <h3>API</h3>
-            <a href="{{url_for('catalog')}}">
-                    <li>
-                        Documentation
-                    </li>
-                </a>
-            <a href="{{url_for('apiCatalog')}}">
-                <li>
-                    Catalog (JSON)
-                </li>
-            </a>
-            <a href="{{url_for('apiCategories')}}">
-                <li>
-                    Categories (JSON)
-                </li>
-            </a>
-            <a href="{{url_for('apiItems')}}">
-                <li>
-                    Items (JSON)
-                </li>
-            </a>
-        </ul>
-        {% endif %}
+            <h3>Description</h3>
+            Returns a JSON object containing all categories and the items within each category.<br><br>
+
+            <h3>URI</h3>
+            <a href="{{url_for('apiCatalog')}}">{{url_for('apiCatalog')}}</a><br><br>
+
+            <h3>Structure</h3>
+            <span class="output">
+                "results": The response body.<br>
+                {<br>
+                - "categories": A list containing all categories.<br>
+                - [<br>
+                - - {<br>
+                - - - "id": The category's id.<br>
+                - - - "name": The category's name.<br>
+                - - - "items": A list containing all of this category's items.<br>
+                - - - [<br>
+                - - - - {<br>
+                - - - - - "id": The item's id.<br>
+                - - - - - "name": The item's name.<br>
+                - - - - - "description": The item's description.<br>
+                - - - - - "image_url": The url for the item's image.<br>
+                - - - - - "category_id": The id for the item's category.<br>
+                - - - - - "user_id": The id for user that created the item.<br>
+                - - - - }<br>
+                - - - ]<br>
+                - - }<br>
+                - ]<br>
+                }
+            </span>
+        </div>
+
+        <div class="inside">
+            <h2>Categories</h2><br>
+
+            <h3>Description</h3>
+            Returns a JSON object containing all categories.<br><br>
+
+            <h3>URI</h3>
+            <a href="{{url_for('apiCategories')}}">{{url_for('apiCategories')}}</a><br><br>
+
+            <h3>Structure</h3>
+            <span class="output">
+                "results": The response body.<br>
+                [<br>
+                - {<br>
+                - - "id": The category's id.<br>
+                - - "name": The category's name.<br>
+                - }<br>
+                ]<br>
+            </span>
+        </div>
+
+        <div class="inside">
+            <h2>Category </h2><br>
+
+            <h3>Description</h3>
+            Returns a JSON object containing a specific category and a list of it's items. Requires a category id to be
+            supplied.<br><br>
+
+            <h3>URI</h3>
+            <a href="{{url_for('apiCategory', category_id=1)}}">{{url_for('apiCategories')}}&lt;category_id&gt;</a><br><br>
+
+            <h3>Structure</h3>
+            <span class="output">
+                "results": The response body.<br>
+                {<br>
+                - "id": The category's id.<br>
+                - "name": The category's name.<br>
+                - "items": A list containing all of this category's items.<br>
+                - [<br>
+                - - {<br>
+                - - - "id": The item's id.<br>
+                - - - "name": The item's name.<br>
+                - - - "description": The item's description.<br>
+                - - - "image_url": The url for the item's image.<br>
+                - - - "category_id": The id for the item's category.<br>
+                - - - "user_id": The id for user that created the item.<br>
+                - - }<br>
+                - ]<br>
+                }<br>
+            </span>
+        </div>
+
+        <div class="inside">
+            <h2>Items</h2><br>
+
+            <h3>Description</h3>
+            Returns a JSON object containing all items.<br><br>
+
+            <h3>URI</h3>
+            <a href="{{url_for('apiItems')}}">{{url_for('apiItems')}}</a><br><br>
+
+            <h3>Structure</h3>
+            <span class="output">
+                "results": The response body.<br>
+                [<br>
+                - {<br>
+                - - "id": The item's id.<br>
+                - - "name": The item's name.<br>
+                - - "description": The item's description.<br>
+                - - "image_url": The url for the item's image.<br>
+                - - "category_id": The id for the item's category.<br>
+                - - "user_id": The id for user that created the item.<br>
+                - }<br>
+                ]<br>
+            </span>
+        </div>
+
+        <div class="inside">
+            <h2>Item</h2><br>
+
+            <h3>Description</h3>
+            Returns a JSON object containing a specific item. Requires an item id to be supplied.<br><br>
+
+            <h3>URI</h3>
+            <a href="{{url_for('apiItem', item_id=1)}}">{{url_for('apiItems')}}&lt;item_id&gt;</a><br><br>
+
+            <h3>Structure</h3>
+            <span class="output">
+                "results": The response body.<br>
+                {<br>
+                - "id": The item's id.<br>
+                - "name": The item's name.<br>
+                - "description": The item's description.<br>
+                - "image_url": The url for the item's image.<br>
+                - "category_id": The id for the item's category.<br>
+                - "user_id": The id for user that created the item.<br>
+                }<br>
+            </span>
+        </div>
+
+        <div class="inside">
+            <h2>Error</h2><br>
+
+            <h3>Description</h3>
+            Returns a JSON object containing the reason for error.<br><br>
+
+            <h3>Structure</h3>
+            <span class="output">
+                "error": The response body.<br>
+                {<br>
+                - "reason": The reason an error occureed.<br>
+                }<br>
+            </span>
+        </div>
     </div>
 </body>
 
