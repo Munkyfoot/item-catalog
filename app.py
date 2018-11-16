@@ -652,6 +652,6 @@ def itemDelete(category_name, item_name):
 
 
 if __name__ == '__main__':
-    app.secret_key = randomString()
+    app.secret_key = 'item_catalog_secret'.encode('utf8')
     app.debug = True
     app.run(host='0.0.0.0', port=8000)

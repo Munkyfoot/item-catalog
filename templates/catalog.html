@@ -24,7 +24,7 @@
         </ul>
         {% if new_items.__len__() > 0 %}
         <ul>
-            <h3>New Items</h3>
+            <h3>Latest Items</h3>
             {% for i in new_items %}
             <a href="{{url_for('item', category_name=i.category.name, item_name=i.name)}}">
                 <li>
