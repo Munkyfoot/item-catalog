@@ -75,7 +75,7 @@ This web app manages a database of categorized items. Any user may view the cata
         * On the next page enter the domain you will be running the app from in "Site URL". If you are running the app from your local machine enter "http://localhost:8000"
         * Click "Save"
         * Copy your "App ID" into fb_client_secrets.json
-        * Copy your "Client Token" into fb_client_secrets.json (You can find your Client Token in Advanced Settings)
+        * Copy your "App Secret" into fb_client_secrets.json (You can find your App Secret in Basic Settings)
 * Setup the database
     * Edit the 'categories' list in create_db_categories.py with the categories you would like
     * Run create_db_categories.py to populate the database
