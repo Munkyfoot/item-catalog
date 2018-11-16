@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from db import DB_NAME, Base, User, Category, Item
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, asc, desc

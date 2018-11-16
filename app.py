@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """The view for the Item Catalog web app."""
 
 from db import DB_NAME, Base, User, Category, Item

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """A collection of methods to keep things DRY."""
 
 import random

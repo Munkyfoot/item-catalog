@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """The model for the Item Catalog web app."""
 
 from sqlalchemy import Column, ForeignKey, Integer, String
