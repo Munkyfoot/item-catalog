@@ -39,7 +39,8 @@ def login():
     login_session['state'] = state
     FB_APP_ID = json.loads(open('fb_client_secrets.json', 'r').read())[
         'web']['app_id']
-    return render_template('login.html', STATE=state, CLIENT_ID=CLIENT_ID, FB_APP_ID=FB_APP_ID)
+    return render_template('login.html', STATE=state, CLIENT_ID=CLIENT_ID,
+                           FB_APP_ID=FB_APP_ID)
 
 
 @app.route('/gconnect', methods=['POST'])

@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+"""Generate a complete database for testing the Item Catalog web app."""
+
 from db import DB_NAME, Base, User, Category, Item
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, asc, desc
@@ -25,9 +27,9 @@ for c in categories:
     session.commit()
 
     for i in items:
-        item = Item(name=i,description='Item Description',category_id=cat_id,user_id=1)
+        item = Item(name=i, description='Item Description',
+                    category_id=cat_id, user_id=1)
         session.add(item)
         session.commit()
-    
-    cat_id += 1
 
+    cat_id += 1
