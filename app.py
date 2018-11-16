@@ -111,7 +111,6 @@ def gconnect():
 
     login_session['provider'] = 'google'
     login_session['username'] = data['name']
-    login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
     user_id = getUserId(login_session['email'])
@@ -178,18 +177,6 @@ def fbconnect():
     login_session['email'] = data['email']
     login_session['facebook_id'] = data['id']
 
-    url = ('https://graph.facebook.com/v3.2/me/picture/'
-           '?access_token={}&redirect=0&height=200&width=200').format(
-        token)
-    h = httplib2.Http()
-    result = h.request(url, 'GET')[1]
-
-    data = json.loads(result)
-
-    print(data)
-
-    login_session['picture'] = data['data']['url']
-
     user_id = getUserId(login_session['email'])
     if user_id is None:
         user_id = createUser(login_session)
@@ -222,7 +209,6 @@ def disconnect():
 
         del login_session['username']
         del login_session['email']
-        del login_session['picture']
         del login_session['user_id']
         del login_session['provider']
 
@@ -252,8 +238,7 @@ def createUser(login_session):
     """Create a user account."""
     session = DBSession()
     newUser = User(name=login_session['username'],
-                   email=login_session['email'],
-                   picture=login_session['picture'])
+                   email=login_session['email'])
     session.add(newUser)
     session.commit()
     user = session.query(User).filter_by(email=login_session['email']).one()

@@ -12,6 +12,7 @@
     {% include 'header.html' %}
     <div class="main">
         <h1>{{category.name}}</h1>        
+        {% if items.__len__() > 0 %}
         <ul>
             <h3>Items</h3>
             {% for i in items %}
@@ -22,6 +23,9 @@
             </a>
             {% endfor %}
         </ul>
+        {% else %}
+        This category does not yet contain any items.
+        {% endif %}
     </div>
 </body>
 

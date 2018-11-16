@@ -18,7 +18,6 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(150), nullable=False)
     email = Column(String(150), nullable=False)
-    picture = Column(String(150), nullable=False)
 
 
 class Category(Base):

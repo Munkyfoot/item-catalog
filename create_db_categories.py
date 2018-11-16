@@ -9,24 +9,10 @@ DBSession = sessionmaker(bind=engine)
 
 session = DBSession()
 
-user = User(name='Username', email='user@test.com')
-session.add(user)
-session.commit()
+categories = ['Music', 'Film', 'Games']
 
-categories = ['Category_1', 'Category_2', 'Category_3']
-
-items = ['Item_1', 'Item_2', 'Item_3']
-
-cat_id = 1
 for c in categories:
     category = Category(name=c)
     session.add(category)
     session.commit()
-
-    for i in items:
-        item = Item(name=i,description='Item Description',category_id=cat_id,user_id=1)
-        session.add(item)
-        session.commit()
-    
-    cat_id += 1
 

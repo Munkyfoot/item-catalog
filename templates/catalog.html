@@ -22,7 +22,7 @@
             </a>
             {% endfor %}
         </ul>
-
+        {% if new_items.__len__() > 0 %}
         <ul>
             <h3>New Items</h3>
             {% for i in new_items %}
@@ -33,6 +33,7 @@
             </a>
             {% endfor %}
         </ul>
+        {% endif %}
         {% if authorized_user %}
         <ul>
             <h3>User</h3>
