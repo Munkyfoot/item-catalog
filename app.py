@@ -37,7 +37,9 @@ def login():
     """Render the login page and generate a random state hash."""
     state = randomString()
     login_session['state'] = state
-    return render_template('login.html', STATE=state, CLIENT_ID=CLIENT_ID)
+    FB_APP_ID = json.loads(open('fb_client_secrets.json', 'r').read())[
+        'web']['app_id']
+    return render_template('login.html', STATE=state, CLIENT_ID=CLIENT_ID, FB_APP_ID=FB_APP_ID)
 
 
 @app.route('/gconnect', methods=['POST'])
