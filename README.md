@@ -47,6 +47,7 @@ This web app manages a database of categorized items. Any user may view the cata
     * Install python
     * Install python modules
         * sqlalchemy
+        * psycopg2
         * flask
         * oauth2client
         * httplib2
