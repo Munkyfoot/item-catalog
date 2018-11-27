@@ -51,6 +51,15 @@ This web app manages a database of categorized items. Any user may view the cata
         * oauth2client
         * httplib2
         * requests
+    * Install postgresql
+* Setup Postgresql
+    * Create role and database with the following commands:
+        * sudo -u postgres createuser -d catalog
+        * sudo -u postgres psql
+            * \password catalog
+                * udacity4life
+            * create database "catalog" owner "catalog";
+            * \q
 * Setup Google Authentication
     * Sign up or login to Google Cloud Platform
     * Create a new project
