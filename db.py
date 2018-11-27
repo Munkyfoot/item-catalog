@@ -8,6 +8,8 @@ from sqlalchemy import create_engine
 
 Base = declarative_base()
 
+DB_USER = 'catalog'
+DB_PASS = 'udacity4life'
 DB_NAME = 'catalog'
 
 
@@ -65,7 +67,7 @@ class Item(Base):
         }
 
 
-engine = create_engine('sqlite:///{}.db'.format(DB_NAME))
-
+engine = create_engine('postgresql://{}:{}@localhost/{}'.format(
+    DB_USER, DB_PASS, DB_NAME))
 
 Base.metadata.create_all(engine)

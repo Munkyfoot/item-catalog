@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 """Generate a complete database for testing the Item Catalog web app."""
 
-from db import DB_NAME, Base, User, Category, Item
+from db import DB_USER, DB_PASS, DB_NAME, Base, User, Category, Item
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, asc, desc
 
-engine = create_engine('sqlite:///{}.db'.format(DB_NAME))
+engine = create_engine('postgresql://{}:{}@localhost/{}'.format(
+    DB_USER, DB_PASS, DB_NAME))
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)

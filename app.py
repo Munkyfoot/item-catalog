@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """The view for the Item Catalog web app."""
 
-from db import DB_NAME, Base, User, Category, Item
+from db import DB_USER, DB_PASS, DB_NAME, Base, User, Category, Item
 from sqlalchemy.orm import sessionmaker
 import sqlalchemy.orm.exc as sqlException
 from sqlalchemy import create_engine, asc, desc
@@ -24,7 +24,8 @@ CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Item Catalog"
 
-engine = create_engine('sqlite:///{}.db'.format(DB_NAME))
+engine = create_engine('postgresql://{}:{}@localhost/{}'.format(
+    DB_USER, DB_PASS, DB_NAME))
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
